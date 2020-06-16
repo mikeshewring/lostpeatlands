@@ -1,6 +1,6 @@
 ## Welcome to Lost Peatlands of South Wales (Unofficial)
 
-![https://www.heritagefund.org.uk/sites/default/files/inline-images/Black%20Bog%20Glyncorrwg%20Copyright%20NPTC.JPG](src)
+![Nant Garreg-lwyd - Lost peatlands](https://drive.google.com/uc?export=download&id=1HFTMKrWhkI9B80gU42G0e14FJIcGKpje)
 
 ### Markdown
 
