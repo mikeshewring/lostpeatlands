@@ -1,8 +1,6 @@
-## Welcome to GitHub Pages
+## Welcome to Lost Peatlands of South Wales (Unofficial)
 
-You can use the [editor on GitHub](https://github.com/mikeshewring/lostpeatlands/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+![https://www.heritagefund.org.uk/sites/default/files/inline-images/Black%20Bog%20Glyncorrwg%20Copyright%20NPTC.JPG](src)
 
 ### Markdown
 
