@@ -1,0 +1,226 @@
+---
+title: "Untitled"
+author: "Mike Shewring"
+date: "16/06/2020"
+output: html_document
+---
+ https://stackoverflow.com/questions/31419096/embed-leaflet-map-created-by-r-into-github
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(stringr)
+library(sf)
+library(mapview)
+library(leaflet)
+library(leafpop)
+# load in data
+list.files("C:\\Users\\C1751157\\Documents\\Lost peatlands\\", full.names = T, pattern =".shp")
+df<-read.csv("C:\\Users\\C1751157\\Documents\\Lost peatlands\\Heritage Register - natural heritage bio.csv")
+group<-unique(df$Designation)
+summary(as.factor(group))
+
+dat<-read.csv("C:\\Users\\C1751157\\Documents\\Lost peatlands\\Heritage Register - natural heritage bio pts.csv")
+dat$wkt<-as.character(dat$wkt)
+dat1<-dat[!dat$wkt == "",]
+dat1$Site.Name
+dat1$wkt<-as.character(dat1$wkt)
+dat1<-st_as_sf(dat1, wkt= "wkt",crs=27700)%>% st_transform(4326) # corrupt geom 7, 17, 18, 27, 28, 30
+plot(dat1)
+
+dat2<-read.csv("C:\\Users\\C1751157\\Documents\\Lost peatlands\\Heritage Register - natural heritage bio polys.csv")
+dat2$wkt<-as.character(dat2$wkt)
+dat2<-dat2[!dat2$wkt == "",]
+dat2$Site.Name
+dat2<-dat2[!dat2$Site.Name == "Pen y Cymoedd Habitat Mangement Area (West)",]
+dat2$wkt<-as.character(dat2$wkt)
+dat2<-st_as_sf(dat2, wkt= "wkt",crs=27700)%>% st_transform(4326) # corrupt geom 7, 17, 18, 27, 28, 30
+plot(dat2)
+
+### These will need adding seperately to the map 
+#[7] Watercourses (NPT SINC) and Taff and Rhondda Rivers (RCT SINCs)
+#[17] Woodland SINCs (Ancient Woodland Sites)
+# [27] Pen y Cymoedd Habitat Mangement Area (Central East)
+#[28] Pen y Cymoedd Habitat Mangement Area (East)
+# [30] Pen y Cymoedd Habitat Mangement Area (Central West)
+
+dat1$x1<-st_coordinates(dat1)[,1]
+dat1$y1<-st_coordinates(dat1)[,2]
+
+dat1$Designation
+library(leaflet)
+library(RColorBrewer)
+
+my_palette <- c("#e6194B","#3cb44b","#ffe119","#4363d8")
+
+group<-unique(df$Designation)
+summary(as.factor(group))
+
+previewColors(colorFactor(my_palette, levels = group), group)
+factpal <- colorFactor(my_palette, levels = group)
+group
+gc()
+data1 = dat2[dat2$Designation == "HRA", ]
+data2 = dat2[dat2$Designation == "SINC", ]
+data3 = dat2[dat2$Designation == "SSSI", ]
+list.files("C:\\Users\\C1751157\\Documents\\Lost peatlands\\", full.names = T, pattern =".shp")
+data4 <- st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\LP_watercourseSINCS.shp")%>%st_transform(4236)
+dfwater<-df[7,]
+data5 <- st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\LP_nptWoodlandSINCs.shp" )%>%st_transform(4236)
+dfwood<-df[17,]
+
+list.files("C:\\Users\\C1751157\\Documents\\Lost peatlands\\2020_boundaries\\", full.names=T, pattern = "shp")
+data6<-st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\2020_boundaries\\Project area.shp")%>%st_transform(4326)
+
+rm(map)
+
+map <- leaflet() %>% setView(lng = -3.5729334, lat = 51.688395, zoom = 12) %>%
+  addProviderTiles(providers$Esri.WorldImagery, "Aerial") %>%
+  addPolygons(data = data6, opacity = 0.9, color = "#8B0000",
+              fillColor = "transparent", group = "Lost Peatlands Project Boundary") %>%
+  addPolygons(data = data1, label = data1$Site.Name,
+                            popup = paste("Name: ", data1$Site.Name, "<br>",
+                            "Description: ", data1$Description, "<br>",
+                            "Designation: ", data1$Designation, "<br>",
+                            "Condition: ", data1$Current.Management, "<br>",
+                            "Ownership: ", data1$Ownership, "<br>",
+                            "Threats: ", data1$Threats, "<br>",
+                            "Opportunities: ",data1$Opportunity.for.the.Project, "<br>",
+                            "Work proposed :", data1$Project.Management.Work.Proposed, "<br>",
+                            "Programme Ref: ", data1$Management.Programme.Reference, "<br>",
+                            "Further Info.: ", data1$Links.to.Futher.Project.Information.plans),
+                            fillOpacity = 0.6, opacity = 0.05, 
+                            fillColor = "#3cb44b", group = "HRA") %>%
+  addPolygons(data = data2, label = "NPT SINC",
+              popup = paste("Name: ", data2$Site.Name, "<br>",
+                            "Description: ", data2$Description, "<br>",
+                            "Designation: ", data2$Designation, "<br>",
+                            "Condition: ", data2$Current.Management, "<br>",
+                            "Ownership: ", data2$Ownership, "<br>",
+                            "Threats: ", data2$Threats, "<br>",
+                            "Opportunities: ",data2$Opportunity.for.the.Project, "<br>",
+                            "Work proposed :", data2$Project.Management.Work.Proposed, "<br>",
+                            "Programme Ref: ", data2$Management.Programme.Reference, "<br>",
+                            "Further Info.: ", data2$Links.to.Futher.Project.Information.plans),
+              fillOpacity = 0.6, opacity = 0.05, 
+              fillColor = "#ffe119", group = "SINC") %>%
+  addPolygons(data = data3, label = data3$Designation,
+              popup = paste("Name: ", data3$Site.Name, "<br>",
+                            "Description: ", data3$Description, "<br>",
+                            "Designation: ", data3$Designation, "<br>",
+                            "Condition: ", data3$Current.Management, "<br>",
+                            "Ownership: ", data3$Ownership, "<br>",
+                            "Threats: ", data3$Threats, "<br>",
+                            "Opportunities: ",data3$Opportunity.for.the.Project, "<br>",
+                            "Work proposed :", data3$Project.Management.Work.Proposed, "<br>",
+                            "Programme Ref: ", data3$Management.Programme.Reference, "<br>",
+                            "Further Info.: ", data3$Links.to.Futher.Project.Information.plans),
+              fillOpacity = 0.6, opacity = 0.05, 
+              fillColor = "#4363d8", group = "SSSI") %>%
+  addCircleMarkers(data = dat1, ~x1, ~y1, label = "RCT SINC",
+                   popup = paste("Name", dat1$Site.Name, "<br>",
+                                 "Description:", dat1$Description, "<br>",
+                                 "Designation:", dat1$Designation, "<br>",
+                                 "Condition:", dat1$Current.Management, "<br>",
+                                 "Ownership:", dat1$Ownership, "<br>",
+                                 "Threats:", dat1$Threats, "<br>",
+                                 "Opportunities:",dat1$Opportunity.for.the.Project, "<br>",
+                                 "Work proposed:", dat1$Project.Management.Work.Proposed, "<br>",
+                                 "Programme Ref:", dat1$Management.Programme.Reference, "<br>",
+                                 "Further Info.:", dat1$Links.to.Futher.Project.Information.plans)
+                   ,radius = 5, weight = 2, opacity = 0.02, fill = TRUE, fillOpacity = 0.6, 
+                   color = "#ffe119",group = "SINC") %>%
+  addPolygons(data = data4, label = "NPT SINC",
+              popup = paste("Name: ", dfwater$Site.Name, "<br>",
+                            "Description: ", dfwater$Description, "<br>",
+                            "Designation: ", dfwater$Designation, "<br>",
+                            "Condition: ", dfwater$Current.Management, "<br>",
+                            "Ownership: ", dfwater$Ownership, "<br>",
+                            "Threats: ", dfwater$Threats, "<br>",
+                            "Opportunities: ",dfwater$Opportunity.for.the.Project, "<br>",
+                            "Work proposed :", dfwater$Project.Management.Work.Proposed, "<br>",
+                            "Programme Ref: ", dfwater$Management.Programme.Reference, "<br>",
+                            "Further Info.: ", dfwater$Links.to.Futher.Project.Information.plans),
+              fillOpacity = 0.6, opacity = 0.02, 
+              fillColor = "#ffe119", group = "SINC") %>%
+  addPolygons(data = data5, label = "NPT SINC",
+              popup = paste("Name: ", dfwood$Site.Name, "<br>",
+                            "Description: ", dfwood$Description, "<br>",
+                            "Designation: ", dfwood$Designation, "<br>",
+                            "Condition: ", dfwood$Current.Management, "<br>",
+                            "Ownership: ", dfwood$Ownership, "<br>",
+                            "Threats: ", dfwood$Threats, "<br>",
+                            "Opportunities: ",dfwood$Opportunity.for.the.Project, "<br>",
+                            "Work proposed :", dfwood$Project.Management.Work.Proposed, "<br>",
+                            "Programme Ref: ", dfwood$Management.Programme.Reference, "<br>",
+                            "Further Info.: ", dfwood$Links.to.Futher.Project.Information.plans),
+              fillOpacity = 0.6, opacity = 0.2, 
+              fillColor = "#ffe119", group = "SINC")
+ 
+
+
+list.files("C:\\Users\\C1751157\\Documents\\Lost peatlands\\", full.names = T, pattern =".shp")
+hmpce<-st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\PyC_CE_Boundary_MS_20200615.shp")%>%st_transform(4326)
+dfce<-df[26,]
+hmpcw<-st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\PyC_CW_Boundary_MS_20200615.shp")%>%st_transform(4326)
+dfcw<-df[29,]
+hmpw<-st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\PyC_W_Boundary_MS_20200615.shp")%>%st_transform(4326)
+dfw<-df[28,]
+hmpe<-st_read("C:\\Users\\C1751157\\Documents\\Lost peatlands\\PyC_E_Boundary_MS_20200615.shp")%>%st_transform(4326)
+dfe<-df[27,]
+df$Site.Name
+map<- map %>% 
+  addPolygons(data=hmpce,popup = paste("Name: ", dfce$Site.Name, "<br>",
+                                "Description: ", dfce$Description, "<br>",
+                                "Designation: ", dfce$Designation, "<br>",
+                                "Condition: ", dfce$Current.Management, "<br>",
+                                "Ownership: ", dfce$Ownership, "<br>",
+                                "Threats: ", dfce$Threats, "<br>",
+                                "Opportunities: ",dfce$Opportunity.for.the.Project, "<br>",
+                                "Work proposed :", dfce$Project.Management.Work.Proposed, "<br>",
+                                "Programme Ref: ", dfce$Management.Programme.Reference, "<br>",
+                                "Further Info.: ", dfce$Links.to.Futher.Project.Information.plans), 
+                fillColor = "#f58231",fillOpacity = 0.5, 
+              opacity = 0.1, label = "PyC Central East HMA",group = "PyC HMP") %>%
+  addPolygons(data=hmpw,popup = paste("Name: ", dfw$Site.Name, "<br>",
+                               "Description: ", dfw$Description, "<br>",
+                               "Designation: ", dfw$Designation, "<br>",
+                               "Condition: ", dfw$Current.Management, "<br>",
+                               "Ownership: ", dfw$Ownership, "<br>",
+                               "Threats: ", dfw$Threats, "<br>",
+                               "Opportunities: ",dfw$Opportunity.for.the.Project, "<br>",
+                               "Work proposed :", dfw$Project.Management.Work.Proposed, "<br>",
+                               "Programme Ref: ", dfw$Management.Programme.Reference, "<br>",
+                               "Further Info.: ", dfw$Links.to.Futher.Project.Information.plans),
+              fillColor = "#f58231", fillOpacity = 0.1, 
+              opacity = 0.3, label = "PyC West HMA",group = "PyC HMP") %>%
+  addPolygons(data=hmpe,popup = paste("Name: ", dfe$Site.Name, "<br>",
+                                  "Description: ", dfe$Description, "<br>",
+                                  "Designation: ", dfe$Designation, "<br>",
+                                  "Condition: ", dfe$Current.Management, "<br>",
+                                  "Ownership: ", dfe$Ownership, "<br>",
+                                  "Threats: ", dfe$Threats, "<br>",
+                                  "Opportunities: ",dfe$Opportunity.for.the.Project, "<br>",
+                                  "Work proposed :", dfe$Project.Management.Work.Proposed, "<br>",
+                                  "Programme Ref: ", dfe$Management.Programme.Reference, "<br>",
+                                  "Further Info.: ", dfe$Links.to.Futher.Project.Information.plans),
+              fillColor = "#f58231", fillOpacity = 0.1, 
+              opacity = 0.3, label = "PyC East HMA", group = "PyC HMP") %>%
+  addPolygons(data=hmpcw,popup = paste("Name: ", dfcw$Site.Name, "<br>",
+                                "Description: ", dfcw$Description, "<br>",
+                                "Designation: ", dfcw$Designation, "<br>",
+                                "Condition: ", dfcw$Current.Management, "<br>",
+                                "Ownership: ", dfcw$Ownership, "<br>",
+                                "Threats: ", dfcw$Threats, "<br>",
+                                "Opportunities: ",dfcw$Opportunity.for.the.Project, "<br>",
+                                "Work proposed :", dfcw$Project.Management.Work.Proposed, "<br>",
+                                "Programme Ref: ", dfcw$Management.Programme.Reference, "<br>",
+                                "Further Info.: ", dfcw$Links.to.Futher.Project.Information.plans),
+              fillColor = "#f58231", fillOpacity = 0.1, 
+              opacity = 0.3, label = "PyC Central West HMA",group = "PyC HMP") %>%
+  addLayersControl(overlayGroups = c("Lost Peatlands Project Boundary", 
+                                     "HRA","SSSI","SINC","PyC HMP"), 
+                   options = layersControlOptions(collapsed = F))
+map
+```
+
