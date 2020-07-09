@@ -2,34 +2,21 @@
 
 ![Nant Garreg-lwyd - Lost peatlands](https://drive.google.com/uc?export=download&id=1HFTMKrWhkI9B80gU42G0e14FJIcGKpje)
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+This is website compiled by Mike Shewring to host code and data from the Heritage Lottery Funded Lost Peatlands of South Wales project.
 
-# Header 1
-## Header 2
-### Header 3
+The project is currently in its development stage (Summer 2020) and will hopefully commence the delivery stage in January 2021, pending a final decision on funding from HLF.
 
-- Bulleted
-- List
+The project spans a large portion of the upland areas of South East Wales and is located across the boundaries of Neath Port Talbot and Rhondda Cynon Taff. It is a multi partner project led by Neath Port Talbot County Council.
 
-1. Numbered
-2. List
+![Castell Nos HRA - lost peatlands](https://drive.google.com/uc?export=download&id=1avaFes0b9UEx1p2sEOCQNU1kUcl-FT4k)
 
-**Bold** and _Italic_ and `Code` text
+During the development phase of the Lost Peatlands Project (August 2019 – September 2020), ecological surveys, hydrological monitoring installation, peat depth surveys and analysis have been carried out across proposed Habitat Restoration Areas (HRAs), Community Wild Spaces (CWSs) and within the Pen y Cymoedd Habitat Management Area (HMA). This work was progressed according to the Lost Peatlands data collection protocol set out in September 2019 and was undertaken by the Lost Peatland Project Ecologists; Mike Shewring and Joey Pickard. T
 
-[Link](url) and ![Image](src)
-```
+The potential for deep peat within the project survey areas was well known at the project outset and had been previously highlighted through internal Forestry Commission Wales and NRW surveys (e.g. Forestry Commission Pre planting Soil maps). Project surveys progressed with the aim of classifying the true extent of peat within the areas and delineating clear boundaries for suitable restoration efforts.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+This has been running parallel with the development of the Pen y Cymoedd Wind Farm Habitat Management Plan (HMP) and the proposed schedule of restoration works for the central eastern section of the Wind Farm Habitat Management Area (HMA). This HMP is being drafted by Vattenfall Ltd (the wind farm operator) in collaboration with Natural Resources Wales (the site manager) and is required to satisfy conditions associated with the consent for the Wind Farm development.
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/mikeshewring/lostpeatlands/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
